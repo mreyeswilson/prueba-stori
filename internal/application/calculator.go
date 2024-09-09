@@ -7,29 +7,34 @@ import (
 	"strconv"
 	"time"
 
-	models "github.com/mreyeswilson/prueba_stori/internal/domain"
+	"github.com/mreyeswilson/prueba_stori/internal/domain/interfaces"
+	"github.com/mreyeswilson/prueba_stori/internal/domain/models"
 )
 
 type CalculatorService struct{}
 
-func NewCalculatorService() *CalculatorService {
+func NewCalculatorService() interfaces.ICalculatorService {
 	return &CalculatorService{}
 }
 
-func (c *CalculatorService) ParseInfo(reader *csv.Reader) []models.Transaction {
+func (c *CalculatorService) parseInfo(reader *io.Reader) ([]models.Transaction, error) {
 	transactions := []models.Transaction{}
 
+	csvReader := csv.NewReader(*reader)
+
 	for {
-		row, err := reader.Read()
+		row, err := csvReader.Read()
 		if err == io.EOF {
 			break
 		}
+
 		if err != nil {
-			fmt.Errorf("failed to read record: %v", err)
+			println(err)
+			return transactions, fmt.Errorf("failed to read csv: %v", err)
 		}
 
 		id := row[0]
-		date, _ := time.Parse("2/1", row[1])
+		date, _ := time.Parse("2006/01", row[1])
 		value, _ := strconv.ParseFloat(row[2], 64)
 
 		transactions = append(transactions, models.Transaction{
@@ -38,10 +43,17 @@ func (c *CalculatorService) ParseInfo(reader *csv.Reader) []models.Transaction {
 			Value: value,
 		})
 	}
-	return transactions
+	return transactions[1:], nil
 }
 
-func (c *CalculatorService) MakeSummary(transactions []models.Transaction) models.Summary {
+func (c *CalculatorService) MakeSummary(reader *io.Reader) (models.Summary, error) {
+
+	transactions, err := c.parseInfo(reader)
+
+	if err != nil {
+		return models.Summary{}, fmt.Errorf("failed to parse info: %v", err)
+	}
+
 	var totalBalance float64
 	creditSum, debitSum := 0.0, 0.0
 	creditCount, debitCount := 0, 0
@@ -86,5 +98,5 @@ func (c *CalculatorService) MakeSummary(transactions []models.Transaction) model
 		TransactionsByMonth: transactionsByMonth,
 	}
 
-	return summary
+	return summary, nil
 }
