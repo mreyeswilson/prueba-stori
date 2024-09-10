@@ -24,6 +24,7 @@ jobs:
           aws-region: us-east-1
       - name: Check coverage
         run: |
+          make gen-mocks
           make check-coverage
       - name: Build and deploy
         run: |
