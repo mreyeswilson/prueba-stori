@@ -72,8 +72,6 @@ func (c *CalculatorService) MakeSummary(reader *io.Reader) (models.Summary, erro
 				transactionsByMonth[i].Count++
 				found = true
 				break
-			} else {
-				found = false
 			}
 		}
 
