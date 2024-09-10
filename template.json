@@ -1,0 +1,8 @@
+{
+  "Template": {
+    "TemplateName": "TransactionSummaryTemplate",
+    "SubjectPart": "Transactions Summary",
+    "TextPart": "Here is the summary of your transactions ",
+    "HtmlPart": "<html>\n<head></head>\n<body style=\"font-family: Arial, sans-serif;\">\n<h2>Transaction Summary</h2>\n<table border=\"1\" cellpadding=\"10\" cellspacing=\"0\" style=\"border-collapse: collapse; width: 100%;\">\n<thead>\n<tr>\n<th style=\"text-align: left;\">Date</th>\n<th style=\"text-align: right;\">Value</th>\n</tr>\n</thead>\n<tbody>\n{{#transactions}}\n<tr>\n<td style=\"text-align: left;\">{{date}}</td>\n<td style=\"text-align: right;\">{{value}}</td>\n</tr>\n{{/transactions}}\n</tbody>\n</table>\n<br />\n<h3>Summary</h3>\n<p><strong>Total Debits:</strong> {{total_debits}}</p>\n<p><strong>Total Credits:</strong> {{total_credits}}</p>\n<p><strong>Total Balance:</strong> {{total_balance}}</p>\n</body>\n</html>"
+  }
+}

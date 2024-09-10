@@ -30,6 +30,17 @@ Resources:
       Policies:
         - S3ReadPolicy:
             BucketName: prueba-stori-bucket
+        - AWSLambdaBasicExecutionRole
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - ses:SendTemplatedEmail
+                - ses:SendEmail
+                - ses:SendRawEmail
+                - ses:GetTemplate
+                - ses:ListIdentities
+              Resource: "*"
       Events:
         s3UploadEvent:
           Type: S3

@@ -16,8 +16,7 @@ coverage:
 	go tool cover -html=coverage.out
 
 gen-mocks:
-	$(MOCK_TO_FILE) ./internal/infraestructure/aws --all --output=mocks/aws
-	$(MOCK_TO_FILE) ./internal/infraestructure/aws --all --output=mocks/aws
+	$(MOCK_TO_FILE) ./internal/interfaces --output=mocks --all
 
 gofmt:
 	find . -name \*.go -exec gofmt -s -w {} \;

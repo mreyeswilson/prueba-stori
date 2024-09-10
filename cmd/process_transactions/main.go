@@ -16,8 +16,9 @@ func lambdaHandler(ctx context.Context, event events.S3Event) (string, error) {
 	// Crear una sesión de AWS
 
 	repo := repositories.NewTransactionRepository(
-		services.NewCalculatorService(),
 		adapters.NewS3Adapter(),
+		services.NewCalculatorService(),
+		services.NewSenderService(adapters.NewSESAdapter()),
 	)
 
 	summary, err := repo.GetSummary(event.Records[0])

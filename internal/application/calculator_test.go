@@ -26,8 +26,8 @@ func TestCalculatorService(t *testing.T) {
 
 		assert.Nil(t, err)
 		assert.IsType(t, models.Summary{}, summary)
-		assert.Equal(t, 50.0, summary.TotalBalance)
-		assert.Equal(t, 100.0, summary.CreditSum)
+		assert.Equal(t, "$50.00", summary.TotalBalance)
+		assert.Equal(t, "$100.00", summary.CreditSum)
 
 	})
 

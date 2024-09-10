@@ -7,3 +7,10 @@ type Transaction struct {
 	Date  time.Time `json:"date"`
 	Value float64   `json:"value"`
 }
+
+type Transactions []Transaction
+
+type GroupTransaction struct {
+	Date         string        `json:"date"`
+	Transactions []Transaction `json:"transactions"`
+}

@@ -57,14 +57,9 @@ func (c *CalculatorService) MakeSummary(reader *io.Reader) (models.Summary, erro
 	var totalBalance float64
 	creditSum, debitSum := 0.0, 0.0
 	creditCount, debitCount := 0, 0
-	transactionsByMonth := make(map[string]int)
 
 	for _, t := range transactions {
 		totalBalance += t.Value
-
-		// Agrupar transacciones por mes (usamos solo mes y año)
-		monthYear := t.Date.Format("January 2006")
-		transactionsByMonth[monthYear]++
 
 		// Calcular totales para créditos y débitos
 		if t.Value > 0 {
@@ -76,26 +71,23 @@ func (c *CalculatorService) MakeSummary(reader *io.Reader) (models.Summary, erro
 		}
 	}
 
-	// Calcular promedios
-	avgCredit := 0.0
-	if creditCount > 0 {
-		avgCredit = creditSum / float64(creditCount)
-	}
-
-	avgDebit := 0.0
-	if debitCount > 0 {
-		avgDebit = debitSum / float64(debitCount)
+	trxToMap := func() []map[string]interface{} {
+		trxMap := []map[string]interface{}{}
+		for _, t := range transactions {
+			trxMap = append(trxMap, map[string]interface{}{
+				"id":    t.ID,
+				"date":  t.Date.Format("2006-01-02 15:04"),
+				"value": fmt.Sprintf("$%.2f", t.Value),
+			})
+		}
+		return trxMap
 	}
 
 	summary := models.Summary{
-		TotalBalance:        totalBalance,
-		CreditSum:           creditSum,
-		DebitSum:            debitSum,
-		AvgCredit:           avgCredit,
-		AvgDebit:            avgDebit,
-		CreditCount:         creditCount,
-		DebitCount:          debitCount,
-		TransactionsByMonth: transactionsByMonth,
+		TotalBalance: fmt.Sprintf("$%.2f", totalBalance),
+		CreditSum:    fmt.Sprintf("$%.2f", creditSum),
+		DebitSum:     fmt.Sprintf("$%.2f", debitSum),
+		Transactions: trxToMap(),
 	}
 
 	return summary, nil

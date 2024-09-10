@@ -1,141 +1,268 @@
-# prueba_stori
+# Stori Test Project
 
-This is a sample template for prueba_stori - Below is a brief explanation of what we have generated for you:
+## Overview
 
-```bash
-.
-├── Makefile                    <-- Make to automate build
-├── README.md                   <-- This instructions file
-├── hello-world                 <-- Source code for a lambda function
-│   ├── main.go                 <-- Lambda function code
-│   └── main_test.go            <-- Unit tests
-└── template.yaml
-```
+This README provides a comprehensive guide to setting up and running the application, including installation instructions for AWS SAM, AWS CLI, Go, and Mockery. It also explains the commands available in the Makefile for managing the project.
 
-## Requirements
+## Prerequisites
 
-* AWS CLI already configured with Administrator permission
-* [Docker installed](https://www.docker.com/community-edition)
-* [Golang](https://golang.org)
-* SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+Before you can run the application, you need to install several tools:
 
-## Setup process
+- **AWS SAM CLI**: A command-line tool that simplifies the process of managing serverless applications.
+- **AWS CLI**: A command-line tool to interact with AWS services.
+- **Go**: The Go programming language.
+- **Mockery**: A mock code generation tool for Go.
 
-### Installing dependencies & building the target 
+## Installation
 
-In this example we use the built-in `sam build` to automatically download all the dependencies and package our build target.   
-Read more about [SAM Build here](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html) 
+### 1. Installing AWS SAM CLI
 
-The `sam build` command is wrapped inside of the `Makefile`. To execute this simply run
- 
-```shell
-make
-```
+AWS SAM (Serverless Application Model) CLI is a command-line tool that simplifies the development of serverless applications. To install it, follow these steps:
 
-### Local development
+#### For macOS
 
-**Invoking function locally through local API Gateway**
+1. **Install Homebrew** if you haven't already:
 
-```bash
-sam local start-api
-```
+    ```bash
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    ```
 
-If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function `http://localhost:3000/hello`
+2. **Install AWS SAM CLI**:
 
-**SAM CLI** is used to emulate both Lambda and API Gateway locally and uses our `template.yaml` to understand how to bootstrap this environment (runtime, where the source code is, etc.) - The following excerpt is what the CLI will read in order to initialize an API and its routes:
+    ```bash
+    brew tap aws/tap
+    brew install aws-sam-cli
+    ```
 
-```yaml
-...
-Events:
-    HelloWorld:
-        Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-        Properties:
-            Path: /hello
-            Method: get
-```
+#### For Windows
 
-## Packaging and deployment
+1. **Install Chocolatey** if you haven't already:
 
-AWS Lambda Golang runtime requires a flat folder with the executable generated on build step. SAM will use `CodeUri` property to know where to look up for the application:
+    Open an administrative PowerShell window and run:
 
-```yaml
-...
-    FirstFunction:
-        Type: AWS::Serverless::Function
-        Properties:
-            CodeUri: hello_world/
-            ...
-```
+    ```powershell
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    ```
 
-To deploy your application for the first time, run the following in your shell:
+2. **Install AWS SAM CLI**:
 
-```bash
-sam deploy --guided
-```
+    ```powershell
+    choco install aws-sam-cli
+    ```
 
-The command will package and deploy your application to AWS, with a series of prompts:
+#### For Linux
 
-* **Stack Name**: The name of the stack to deploy to CloudFormation. This should be unique to your account and region, and a good starting point would be something matching your project name.
-* **AWS Region**: The AWS region you want to deploy your app to.
-* **Confirm changes before deploy**: If set to yes, any change sets will be shown to you before execution for manual review. If set to no, the AWS SAM CLI will automatically deploy application changes.
-* **Allow SAM CLI IAM role creation**: Many AWS SAM templates, including this example, create AWS IAM roles required for the AWS Lambda function(s) included to access AWS services. By default, these are scoped down to minimum required permissions. To deploy an AWS CloudFormation stack which creates or modifies IAM roles, the `CAPABILITY_IAM` value for `capabilities` must be provided. If permission isn't provided through this prompt, to deploy this example you must explicitly pass `--capabilities CAPABILITY_IAM` to the `sam deploy` command.
-* **Save arguments to samconfig.toml**: If set to yes, your choices will be saved to a configuration file inside the project, so that in the future you can just re-run `sam deploy` without parameters to deploy changes to your application.
+1. **Download the AWS SAM CLI binary**:
 
-You can find your API Gateway Endpoint URL in the output values displayed after deployment.
+    ```bash
+    curl "https://d1uj6qtbmh3dt5.cloudfront.net/aws-sam-cli-linux-x86_64.zip" -o "sam-cli-linux-x86_64.zip"
+    ```
 
-### Testing
+2. **Unzip the package and install**:
 
-We use `testing` package that is built-in in Golang and you can simply run the following command to run our tests:
+    ```bash
+    unzip sam-cli-linux-x86_64.zip
+    sudo ./install
+    ```
 
-```shell
-cd ./hello-world/
-go test -v .
-```
-# Appendix
+3. **Verify the installation**:
 
-### Golang installation
+    ```bash
+    sam --version
+    ```
 
-Please ensure Go 1.x (where 'x' is the latest version) is installed as per the instructions on the official golang website: https://golang.org/doc/install
+### 2. Installing AWS CLI
 
-A quickstart way would be to use Homebrew, chocolatey or your linux package manager.
+AWS CLI is a command-line tool that allows you to interact with AWS services.
 
-#### Homebrew (Mac)
+#### For macOS
 
-Issue the following command from the terminal:
+1. **Install Homebrew** if you haven't already:
 
-```shell
-brew install golang
-```
+    ```bash
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    ```
 
-If it's already installed, run the following command to ensure it's the latest version:
+2. **Install AWS CLI**:
 
-```shell
-brew update
-brew upgrade golang
-```
+    ```bash
+    brew install awscli
+    ```
 
-#### Chocolatey (Windows)
+#### For Windows
 
-Issue the following command from the powershell:
+1. **Download the AWS CLI installer** from the [official AWS website](https://aws.amazon.com/cli/).
 
-```shell
-choco install golang
-```
+2. **Run the installer** and follow the instructions.
 
-If it's already installed, run the following command to ensure it's the latest version:
+#### For Linux
 
-```shell
-choco upgrade golang
-```
+1. **Install using the package manager**:
 
-## Bringing to the next level
+    ```bash
+    sudo apt-get update
+    sudo apt-get install awscli
+    ```
 
-Here are a few ideas that you can use to get more acquainted as to how this overall process works:
+2. **Verify the installation**:
 
-* Create an additional API resource (e.g. /hello/{proxy+}) and return the name requested through this new path
-* Update unit test to capture that
-* Package & Deploy
+    ```bash
+    aws --version
+    ```
 
-Next, you can use the following resources to know more about beyond hello world samples and how others structure their Serverless applications:
+### 3. Configuring AWS CLI Profile
 
-* [AWS Serverless Application Repository](https://aws.amazon.com/serverless/serverlessrepo/)
+To interact with AWS services and deploy your application, you need to configure your AWS CLI profile. Follow these steps to set it up:
+
+1. **Run the AWS Configure Command**:
+
+    ```bash
+    aws configure
+    ```
+
+2. **Provide Your AWS Credentials**:
+
+    You will be prompted to enter the following information:
+
+    - **AWS Access Key ID**: Your AWS access key.
+    - **AWS Secret Access Key**: Your AWS secret key.
+    - **Default region name**: The AWS region you want to use (e.g., `us-east-1`).
+    - **Default output format**: The format for output (e.g., `json`).
+
+   These credentials are saved in the `~/.aws/credentials` and `~/.aws/config` files.
+
+### 4. Installing Go
+
+Go is a statically typed, compiled programming language designed at Google.
+
+#### For macOS and Linux
+
+1. **Download the Go binary**:
+
+    ```bash
+    wget https://golang.org/dl/go1.20.3.darwin-amd64.tar.gz
+    ```
+
+2. **Extract and install Go**:
+
+    ```bash
+    sudo tar -C /usr/local -xzf go1.20.3.darwin-amd64.tar.gz
+    ```
+
+3. **Add Go to your PATH**:
+
+    ```bash
+    export PATH=$PATH:/usr/local/go/bin
+    ```
+
+4. **Verify the installation**:
+
+    ```bash
+    go version
+    ```
+
+#### For Windows
+
+1. **Download the Go installer** from the [official Go website](https://golang.org/dl/).
+
+2. **Run the installer** and follow the instructions.
+
+3. **Verify the installation**:
+
+    ```powershell
+    go version
+    ```
+
+### 5. Installing Mockery
+
+Mockery is a tool for generating mock objects in Go.
+
+1. **Install Mockery**:
+
+    ```bash
+    go install github.com/vektra/mockery/v2@latest
+    ```
+
+2. **Add the Go binary path to your PATH**:
+
+    ```bash
+    export PATH=$PATH:$(go env GOPATH)/bin
+    ```
+
+3. **Verify the installation**:
+
+    ```bash
+    mockery --version
+    ```
+
+## Makefile Commands
+
+The `Makefile` provides several commands for managing the project. Below are the commands and their descriptions:
+
+- **build**: Builds the project using the AWS SAM CLI. This command packages your Lambda functions and prepares them for deployment.
+
+- **start**: Builds the project (using the `build` command) and starts a local API gateway for testing. The local API runs on port 5000.
+
+- **coverage**: Runs tests and generates a code coverage report. It also generates an HTML report for viewing test coverage.
+
+- **gen-mocks**: Generates mock implementations for interfaces in the specified directory using Mockery. The mocks are saved in the `mocks` directory.
+
+- **gofmt**: Formats all Go source files in the project using `gofmt`, ensuring consistent code formatting.
+
+- **deploy**: Formats Go files (using the `gofmt` command), builds the project (using the `build` command), and deploys it to AWS using SAM. It specifies the stack name, AWS region, S3 bucket, and other deployment options.
+
+## Running the Application
+
+1. **Clone the Repository**:
+
+    ```bash
+    git clone https://github.com/your-repo/project.git
+    cd project
+    ```
+
+2. **Install Dependencies**:
+
+    Navigate to your project directory and run:
+
+    ```bash
+    go mod tidy
+    ```
+
+3. **Build the Project**:
+
+    ```bash
+    go build -o your-app
+    ```
+
+4. **Deploy the Application Using SAM**:
+
+    ```bash
+    sam build
+    sam deploy --guided
+    ```
+
+5. **Run Unit Tests**:
+
+    To run tests for your Go application, use:
+
+    ```bash
+    go test ./...
+    ```
+
+6. **Generate Mocks**:
+
+    Use Mockery to generate mocks for your interfaces:
+
+    ```bash
+    mockery --all
+    ```
+
+## Additional Information
+
+- **AWS SAM Documentation**: [AWS SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli.html)
+- **AWS CLI Documentation**: [AWS CLI Documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html)
+- **Mockery Documentation**: [Mockery GitHub Repository](https://github.com/vektra/mockery)
+- **Go Documentation**: [Go Documentation](https://golang.org/doc/)
+
+Feel free to reach out if you have any questions or run into any issues.

@@ -11,15 +11,18 @@ import (
 type TransactionRepository struct {
 	Calculator interfaces.ICalculatorService
 	S3Adapter  interfaces.IStorageAdapter
+	Sender     interfaces.ISenderService
 }
 
 func NewTransactionRepository(
-	calculatorService interfaces.ICalculatorService,
 	storageAdapter interfaces.IStorageAdapter,
+	calculatorService interfaces.ICalculatorService,
+	senderService interfaces.ISenderService,
 ) interfaces.ITransactionRepository {
 	return &TransactionRepository{
 		Calculator: calculatorService,
 		S3Adapter:  storageAdapter,
+		Sender:     senderService,
 	}
 }
 
@@ -38,5 +41,24 @@ func (t *TransactionRepository) GetSummary(event events.S3EventRecord) (models.S
 
 	reader := io.Reader(body)
 
-	return t.Calculator.MakeSummary(&reader)
+	summary, err := t.Calculator.MakeSummary(&reader)
+
+	if err != nil {
+		return models.Summary{}, err
+	}
+
+	t.Sender.SendEmail(
+		"test@devwil.com",
+		"Summary",
+		&map[string]interface{}{
+			"customer_name": "John Doe",
+			"transactions":  summary.Transactions,
+			"total_balance": summary.TotalBalance,
+			"total_credits": summary.CreditSum,
+			"total_debits":  summary.DebitSum,
+			"company_name":  "Stori Test",
+		},
+	)
+
+	return summary, nil
 }
