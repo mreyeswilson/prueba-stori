@@ -57,9 +57,33 @@ func (c *CalculatorService) MakeSummary(reader *io.Reader) (models.Summary, erro
 	var totalBalance float64
 	creditSum, debitSum := 0.0, 0.0
 	creditCount, debitCount := 0, 0
+	averageCredit, averageDebit := 0.0, 0.0
+	transactionsByMonth := []models.MonthTransaction{}
 
 	for _, t := range transactions {
 		totalBalance += t.Value
+
+		month := t.Date.Format("January, 2006")
+
+		// Verificar si el mes ya existe en el slice
+		found := false
+		for i, mt := range transactionsByMonth {
+			if mt.Month == month {
+				transactionsByMonth[i].Count++
+				found = true
+				break
+			} else {
+				found = false
+			}
+		}
+
+		// Si no existe, agregarlo
+		if !found {
+			transactionsByMonth = append(transactionsByMonth, models.MonthTransaction{
+				Month: month,
+				Count: 1,
+			})
+		}
 
 		// Calcular totales para créditos y débitos
 		if t.Value > 0 {
@@ -69,25 +93,25 @@ func (c *CalculatorService) MakeSummary(reader *io.Reader) (models.Summary, erro
 			debitSum += t.Value
 			debitCount++
 		}
-	}
 
-	trxToMap := func() []map[string]interface{} {
-		trxMap := []map[string]interface{}{}
-		for _, t := range transactions {
-			trxMap = append(trxMap, map[string]interface{}{
-				"id":    t.ID,
-				"date":  t.Date.Format("2006-01-02 15:04"),
-				"value": fmt.Sprintf("$%.2f", t.Value),
-			})
+		// Calcular promedios para créditos y débitos
+
+		if creditCount > 0 {
+			averageCredit = creditSum / float64(creditCount)
 		}
-		return trxMap
+
+		if debitCount > 0 {
+			averageDebit = debitSum / float64(debitCount)
+		}
 	}
 
 	summary := models.Summary{
-		TotalBalance: fmt.Sprintf("$%.2f", totalBalance),
-		CreditSum:    fmt.Sprintf("$%.2f", creditSum),
-		DebitSum:     fmt.Sprintf("$%.2f", debitSum),
-		Transactions: trxToMap(),
+		TotalBalance:        fmt.Sprintf("$%.2f", totalBalance),
+		CreditSum:           fmt.Sprintf("$%.2f", creditSum),
+		CreditAvg:           fmt.Sprintf("$%.2f", averageCredit),
+		DebitAvg:            fmt.Sprintf("$%.2f", averageDebit),
+		DebitSum:            fmt.Sprintf("$%.2f", debitSum),
+		TransactionsByMonth: transactionsByMonth,
 	}
 
 	return summary, nil

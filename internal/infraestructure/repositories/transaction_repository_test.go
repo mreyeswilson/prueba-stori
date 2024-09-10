@@ -80,7 +80,7 @@ func TestTransactionRepository(t *testing.T) {
 		mockS3Adapter := new(mocks.IStorageAdapter)
 		mockCalculatorService := new(mocks.ICalculatorService)
 		mockReadCloser := io.NopCloser(strings.NewReader("ID,Date,Value\n1,2024/08,-300"))
-		
+
 		mockReader := io.Reader(mockReadCloser)
 
 		mockS3Adapter.On("GetObject", "test-bucket", "test-key").Return(
@@ -95,11 +95,9 @@ func TestTransactionRepository(t *testing.T) {
 			services.NewSenderService(adapters.NewSESAdapter()),
 		)
 
-
-
 		_, err := repo.GetSummary(event)
 
 		assert.NotNil(t, err)
-		
+
 	})
 }
