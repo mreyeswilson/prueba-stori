@@ -258,6 +258,38 @@ The `Makefile` provides several commands for managing the project. Below are the
     mockery --all
     ```
 
+## Generating SES Template
+
+To create the required SES (Simple Email Service) template, you need to use the AWS CLI. Follow these steps:
+
+1. **Ensure you have the `template.json` file**: This file, located at the root of the project directory, contains the template definition for SES.
+
+2. **Run the following AWS CLI command** to create the SES template:
+
+    ```bash
+    aws ses create-template --cli-input-json file://template.json
+    ```
+
+   This command uses the `template.json` file to define the email template in SES.
+
+## Uploading CSV to S3 Bucket
+
+For the application to function correctly, you need to upload your CSV file to the specified S3 bucket. Follow these steps:
+
+1. **Upload the CSV file** to the following public S3 bucket with read and write permissions:
+
+    ```text
+    https://prueba-stori-bucket.s3.amazonaws.com
+    ```
+
+2. **Ensure the file is accessible**: The bucket is public and allows both reading and writing, so make sure your CSV file is correctly uploaded.
+
+   You can use the AWS CLI or the AWS Management Console to upload the file. For example, using the AWS CLI:
+
+    ```bash
+    aws s3 cp your-file.csv s3://prueba-stori-bucket/your-file.csv
+    ```
+
 ## Additional Information
 
 - **AWS SAM Documentation**: [AWS SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli.html)
