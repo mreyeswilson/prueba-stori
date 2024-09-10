@@ -22,6 +22,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      - name: Setup Mockery
+        uses: brokeyourbike/go-mockery-action@v0
+        with:
+          mockery-version: '2.45.0' # The mockery version to download and use.
       - name: Check coverage
         run: |
           make gen-mocks
