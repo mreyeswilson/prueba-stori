@@ -33,6 +33,7 @@ jobs:
       - name: Check coverage
         run: |
           make gen-mocks
+          make coverage
           make check-coverage
       - name: Build and deploy
         run: |
