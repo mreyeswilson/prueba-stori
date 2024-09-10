@@ -4,6 +4,7 @@ AWS_REGION ?= us-east-1
 S3_BUCKET ?= prueba-stori-$(AWS_REGION)
 TEST_TO_FILE ?= go test -coverprofile=coverage.out
 MOCK_TO_FILE = mockery --dir
+COVERAGE_THRESHOLD = 100.0
 
 build:
 	sam build
@@ -14,6 +15,16 @@ start: build
 coverage:
 	$(TEST_TO_FILE) ./internal/application/... ./internal/infraestructure/repositories/...
 	go tool cover -html=coverage.out
+
+check-coverage:
+	$(TEST_TO_FILE) ./internal/application/... ./internal/infraestructure/repositories/...
+	@COVERAGE=$(shell go tool cover -func=coverage.out | grep total: | awk '{print $$3}' | sed 's/%//'); \
+	if [ "$$COVERAGE" != "$(COVERAGE_THRESHOLD)" ]; then \
+		echo "Coverage is $$COVERAGE%, which is less than the required $(COVERAGE_THRESHOLD)%"; \
+		exit 1; \
+	else \
+		echo "Coverage is $$COVERAGE%, meeting the requirement"; \
+	fi
 
 gen-mocks:
 	$(MOCK_TO_FILE) ./internal/interfaces --output=mocks --all
