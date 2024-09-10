@@ -32,7 +32,6 @@ jobs:
           mockery-version: '2.45.0' # The mockery version to download and use.
       - name: Check coverage
         run: |
-          touch coverage.out
           make gen-mocks
           make check-coverage
       - name: Build and deploy
