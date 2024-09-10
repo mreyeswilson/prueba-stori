@@ -27,7 +27,7 @@ check-coverage:
 	fi
 
 gen-mocks:
-	$(MOCK_TO_FILE) ./internal/interfaces --output=mocks --all
+	$(MOCK_TO_FILE) ./internal/domain/interfaces --output=mocks --all
 
 gofmt:
 	find . -name \*.go -exec gofmt -s -w {} \;
